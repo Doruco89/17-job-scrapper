@@ -5,6 +5,7 @@ from file import save_to_csv
 app = Flask(__name__)
 
 db={}
+page = 2
 
 @app.route("/") # 최초 루트페이지에 대한 설정 / 첫페이지 기본값?
 def hello_world():
@@ -21,11 +22,13 @@ def search():
         jobs = db[keyword]
 
     else:
-        jobs1 = search_incurit(keyword, 2)
+        jobs1 = search_incurit(keyword, page)
+        jobs2 = search_work24(keyword, page)
+        jobs = jobs1 + jobs2
         db[keyword] = jobs
-        jobs2 = search_work24(keyword)
-        job = jobs1 + jobs2
-        return render_template("search.html", jobs=enumerate(job), keyword=keyword, count=len(job))
+        
+        
+        return render_template("search.html", jobs=enumerate(jobs), keyword=keyword, count=len(jobs))
 
 @app.route("/file")
 def file():

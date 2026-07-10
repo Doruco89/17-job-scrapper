@@ -34,7 +34,7 @@ def search_incurit(keyword, page):
 
             jobs.append(job_data)
     
-    return(jobs)
+    return jobs
 
 # if __name__ == "__main__":
 #     result = search_incurit("간호사", 2)
@@ -42,33 +42,34 @@ def search_incurit(keyword, page):
 #     print(len(result))
 
 
-def search_work24(keyword):
-    url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=all&topQueryData={keyword}"
-    r = requests.get(url,headers=headers)
-    soup = BeautifulSoup(r.text, "html.parser")
-    lis = soup.find("ul", class_="srch_list_default").find_all("li")
-
+def search_work24(keyword, page):
+    
     jobs = []
-    
-    
-    for li in lis:
-        company = li.find("strong", class_="b1_sb").text
-        title_tag =li.find("a", class_="btn_txt")
-        title = " ".join(title_tag.text.split())
-        location = li.find("div", class_="vline_group").find_all("span")[4].text.strip()
-        # location = li.find("div", class_="item").find_all("span")[0].text
-        link = "http://www.work24.go.kr/" + li.find("dl", class_="dl_list").find("a").get("href")
 
-        job_data = {
-            "company": company,
-            "title": title,
-            "location": location,
-            "link":link
-        }
+    for i in range(page):
+        start_count = i + 1
+        url =f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=tb_workinfo&topQueryData={keyword}&startDate=&endDate=&sortField=&includedQuery=&excludedQuery=&startCount={start_count}&listCount=10&rdo="
+        # url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=all&topQueryData={keyword}"
+        r = requests.get(url,headers=headers)
+        soup = BeautifulSoup(r.text, "html.parser")
+        lis = soup.find("ul", class_="srch_list_default").find_all("li")
 
-        jobs.append(job_data)
-    
-    return(jobs)
+        for li in lis:
+            company = li.find("strong", class_="b1_sb").text
+            title = li.find("a", class_="btn_txt").text.strip()
+            location = li.find("div", class_="vline_group").find_all("span")[4].text.strip()
+            link = li.find("dd").find("a").get("href")
+
+            job_data = {
+                "company": company,
+                "title": title,
+                "location": location,
+                "link":link
+            }
+
+            jobs.append(job_data)
+        
+    return jobs
 
 
 
