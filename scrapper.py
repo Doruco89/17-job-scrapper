@@ -42,29 +42,22 @@ def search_incurit(keyword, page):
 #     print(len(result))
 
 
-
-
-
-
 def search_work24(keyword):
-    
-    jobs = []
-    
-    url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=tb_workinfo&topQueryData={keyword}"
+    url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=all&topQueryData={keyword}"
     r = requests.get(url,headers=headers)
     soup = BeautifulSoup(r.text, "html.parser")
     lis = soup.find("ul", class_="srch_list_default").find_all("li")
 
-       
+    jobs = []
+    
     
     for li in lis:
-        company = li.find("dl", class_= "dl_list").find("strong", class_="b1_sb").text
-        title = li.find("a", class_="btn_txt").text.strip()
-        # title = " ".join(title_tag.text.split())
+        company = li.find("strong", class_="b1_sb").text
+        title_tag =li.find("a", class_="btn_txt")
+        title = " ".join(title_tag.text.split())
         location = li.find("div", class_="vline_group").find_all("span")[4].text.strip()
         # location = li.find("div", class_="item").find_all("span")[0].text
-        link = li.find("dd").find("a").get("href")
-        # link = "http://www.work24.go.kr/" + li.find("dl", class_="dl_list").find("a").get("href")
+        link = "http://www.work24.go.kr/" + li.find("dl", class_="dl_list").find("a").get("href")
 
         job_data = {
             "company": company,
@@ -76,4 +69,37 @@ def search_work24(keyword):
         jobs.append(job_data)
     
     return(jobs)
+
+
+
+
+# def search_work24(keyword):
+    
+#     jobs = []
+#     for i in range(page):
+#         page = 30 * i  
+#         url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=tb_workinfo&topQueryData={keyword}
+#         r = requests.get(url,headers=headers)
+#         soup = BeautifulSoup(r.text, "html.parser")
+#         lis = soup.find("ul", class_="srch_list_default").find_all("li")
+
+#         for li in lis:
+#             company = li.find("dl", class_= "dl_list").find("strong", class_="b1_sb").text
+#             title = li.find("a", class_="btn_txt").text.strip()
+#             # title = " ".join(title_tag.text.split())
+#             location = li.find("div", class_="vline_group").find_all("span")[4].text.strip()
+#             # location = li.find("div", class_="item").find_all("span")[0].text
+#             link = li.find("dd").find("a").get("href")
+#             # link = "http://www.work24.go.kr/" + li.find("dl", class_="dl_list").find("a").get("href")
+
+#             job_data = {
+#                 "company": company,
+#                 "title": title,
+#                 "location": location,
+#                 "link":link
+#             }
+
+#         jobs.append(job_data)
+    
+#     return(jobs)
 
