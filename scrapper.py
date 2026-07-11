@@ -6,14 +6,14 @@ headers = {
     "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
 }
 
-def search_incurit(keyword, page):
+def search_incruit(keyword, page = 1):
     
-    jobs = []
+    incruit_jobs = []
     
     for i in range(page):
         page = 30 * i
         url = f"https://search.incruit.com/list/search.asp?col=job&kw={keyword}&startno={page}"
-        r = requests.get(url) #r은 변수
+        r = requests.get(url, headers = headers) #r은 변수
         # print(r.text)
         soup = BeautifulSoup(r.text, "html.parser")
         lis = soup.find_all("li", class_="c_col")
@@ -32,9 +32,9 @@ def search_incurit(keyword, page):
                 "link":link
             }
 
-            jobs.append(job_data)
+            incruit_jobs.append(job_data)
     
-    return jobs
+    return incruit_jobs
 
 # if __name__ == "__main__":
 #     result = search_incurit("간호사", 2)
@@ -44,11 +44,10 @@ def search_incurit(keyword, page):
 
 def search_work24(keyword, page):
     
-    jobs = []
+    work24_jobs = []
 
-    for i in range(page):
-        start_count = i + 1
-        url =f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=tb_workinfo&topQueryData={keyword}&startDate=&endDate=&sortField=&includedQuery=&excludedQuery=&startCount={start_count}&listCount=10&rdo="
+    for i in range(1, page+ 1 ):
+        url =f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=tb_workinfo&topQueryData={keyword}&startCount={i}"
         # url = f"https://www.work24.go.kr/cm/f/c/0100/selectUnifySearch.do?topQuerySearchArea=all&topQueryData={keyword}"
         r = requests.get(url,headers=headers)
         soup = BeautifulSoup(r.text, "html.parser")
@@ -67,9 +66,9 @@ def search_work24(keyword, page):
                 "link":link
             }
 
-            jobs.append(job_data)
+            work24_jobs.append(job_data)
         
-    return jobs
+    return work24_jobs
 
 
 
